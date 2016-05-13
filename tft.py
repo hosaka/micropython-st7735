@@ -7,11 +7,11 @@ class TFT(ST7735):
 
     def __init__(self, width, height, spi, dc, cs, rst, bl=None):
         """
-        SPI           - SPI Bus (CLK/MOSI/MISO)
-        DC            - RS/DC data/command flag
-        CS            - Chip Select, enable communication
-        RST/RES       - Reset
-        BL/Lite       - Backlight control
+        SPI      - SPI Bus (CLK/MOSI/MISO)
+        DC       - RS/DC data/command flag
+        CS       - Chip Select, enable communication
+        RST/RES  - Reset
+        BL/Lite  - Backlight control
         """
 
         # self.tab = tab
@@ -27,10 +27,74 @@ class TFT(ST7735):
     # ST7735 HAL
     def init(self):
         """
-        Define your init for your display tab color version.
-
-        This is a green tab example.
+        Define your init for different display tab color versions.
         """
+        raise NotImplementedError
+
+        # self.clear()
+        # self.power(True)
+
+    def reset(self):
+        """
+        Hard reset the display.
+        """
+        self.dc.value(0)
+        self.rst.value(1)
+        time.sleep_ms(500)
+        self.rst.value(0)
+        time.sleep_ms(500)
+        self.rst.value(1)
+        time.sleep_ms(500)
+
+    def backlight(self, state=None):
+        """
+        Get or set the backlight status if the pin is available.
+        """
+        if self.bl is None:
+            return None
+        else:
+            if state is None:
+                return self.backlight
+            self.bl.value(1 if state else 0)
+            self.backlight = state
+
+    def write_pixels(self, count, color):
+        """
+        Write pixels to the display.
+
+        count - total number of pixels
+        color - 16-bit RGB value
+        """
+        self.dc.value(1)
+        self.cs.value(0)
+        for _ in range(count):
+            self.spi.write(color)
+        self.cs.value(1)
+
+    def write_cmd(self, cmd):
+        """
+        Display command write implementation using SPI.
+        """
+        self.dc.value(0)
+        self.cs.value(0)
+        self.spi.write(cmd)
+        self.cs.value(1)
+
+    def write_data(self, data):
+        """
+        Display data write implementation using SPI.
+        """
+        self.dc.value(1)
+        self.cs.value(0)
+        self.spi.write(data)
+        self.cs.value(1)
+
+class TFT_GREEN(TFT):
+
+    def __init__ (self, width, height, spi, dc, cs, rst, bl=None):
+        super().__init__(width, height, spi, dc, cs, rst, bl)
+
+    def init(self):
         # set column and row margins
         self.margin_row = 1
         self.margin_col = 2
@@ -93,61 +157,3 @@ class TFT(ST7735):
 
         self.write_cmd(TFT.CMD_DISPON)
         time.sleep_ms(100)
-
-        # self.clear()
-        # self.power(True)
-
-    def reset(self):
-        """
-        Hard reset the display.
-        """
-        self.dc.value(0)
-        self.rst.value(1)
-        time.sleep_ms(500)
-        self.rst.value(0)
-        time.sleep_ms(500)
-        self.rst.value(1)
-        time.sleep_ms(500)
-
-    def backlight(self, state=None):
-        """
-        Get or set the backlight status if the pin is available.
-        """
-        if self.bl is None:
-            return None
-        else:
-            if state is None:
-                return self.backlight
-            self.bl.value(1 if state else 0)
-            self.backlight = state
-
-    def write_pixels(self, count, color):
-        """
-        Write pixels to the display.
-
-        count - total number of pixels
-        color - 16-bit RGB value
-        """
-        self.dc.value(1)
-        self.cs.value(0)
-        for _ in range(count):
-            self.spi.write(color)
-        self.cs.value(1)
-
-    def write_cmd(self, cmd):
-        """
-        Display command write implementation using SPI.
-        """
-        self.dc.value(0)
-        self.cs.value(0)
-        self.spi.write(cmd)
-        self.cs.value(1)
-
-    def write_data(self, data):
-        """
-        Display data write implementation using SPI.
-        """
-        self.dc.value(1)
-        self.cs.value(0)
-        self.spi.write(data)
-        self.cs.value(1)
