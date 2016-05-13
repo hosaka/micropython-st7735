@@ -155,30 +155,16 @@ class ST7735(object):
         """
         Draw a rectangle with specified coordinates/size and fill with color.
         """
-        # starting coordinate is within the screen
+        # check the coordinates and trim if necessary
         if (x >= self.width) or (y >= self.height):
             return
-
-        # trim the requested size if necessary
         if (x + w - 1) >= self.width:
             w = self.width - x
         if (y + h - 1) >= self.height:
             h = self.height - y
 
-        # print("final coords:")
-        # print(x, y, w, h)
-        # print("set window:")
-        # print(x, y, x + w - 1, y + h - 1)
-
-        # set window
         self._set_window(x, y, x + w - 1, y + h - 1)
-
-        # count pixels and write them
-        pixels = (w * h)
-
-        # print("write pixels:")
-        # print(pixels)
-        self.write_pixels(pixels, bytearray([color >> 8, color]))
+        self.write_pixels((w*h), bytearray([color >> 8, color]))
 
     def hline(self, x, y, w, color):
         if (x >= self.width) or (y >= self.height):
