@@ -208,11 +208,55 @@ class ST7735(object):
         self._set_window(x, y, x, y + h - 1)
         self.write_pixels(y+h-1, bytearray([color >> 8, color]))
 
-    def text(self, string, font, x, y, color):
-        pass
+    def text(self, x, y, string, font, color, sizex=1, sizey=1):
+        if font is None:
+            return
 
-    def char(self, char, font, x, y, color):
-        pass
+    def char(self, x, y, char, font, color, sizex=1, sizey=1):
+        """
+        Draw a character at a given position using given font.
+
+        Font is a data dictionary, can be scaled with sizex and sizey.
+        """
+        if font is None:
+            return
+
+        startchar = font['start']
+        endchar = font['end']
+        ci = ord(char)
+
+        if (startchar <= ci <= endchar):
+            w = font['width']
+            h = font['height']
+            ci = (ci - startchar) * w
+
+            ch = font['data'][ci:ci + w]
+
+            # no font scaling
+            px = x
+            if (sizex <= 1 and sizey <= 1):
+                for c in ch:
+                    py = y
+                    for _ in range(h):
+                        if c & 0x01:
+                            self.pixel(px, py, color)
+                        py += 1
+                        c >>= 1
+                    px += 1
+
+            # scale to given sizes
+            else:
+                for c in ch:
+                    py = y
+                    for _ in range(h):
+                        if c & 0x01:
+                            self.rect(px, py, sizex, sizey, color)
+                        py += sizey
+                        pc >>= 1
+                    px += sizex
+        else:
+            # character not found in this font
+            return
 
     def init(self):
         """
