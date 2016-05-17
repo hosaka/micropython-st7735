@@ -208,13 +208,29 @@ class ST7735(object):
         self._set_window(x, y, x, y + h - 1)
         self.write_pixels(y+h-1, bytearray([color >> 8, color]))
 
-    def text(self, x, y, string, font, color, sizex=1, sizey=1):
+    def text(self, x, y, string, font, color, size=1):
+        """
+        Draw text at a given position using the user font.
+        Font can be scaled with the size parameter.
+        """
         if font is None:
             return
 
+        width = size * font['width'] + 1
+
+        px = x
+        for c in string:
+            self.char(px, y, c, font, color, size, size)
+            px += width
+
+            # wrap the text to the next line if it reaches the end
+            if px + width > self.width:
+                y += font['height'] * size + 1
+                px = x
+
     def char(self, x, y, char, font, color, sizex=1, sizey=1):
         """
-        Draw a character at a given position using given font.
+        Draw a character at a given position using the user font.
 
         Font is a data dictionary, can be scaled with sizex and sizey.
         """
@@ -226,18 +242,18 @@ class ST7735(object):
         ci = ord(char)
 
         if (startchar <= ci <= endchar):
-            w = font['width']
-            h = font['height']
-            ci = (ci - startchar) * w
+            width = font['width']
+            height = font['height']
+            ci = (ci - startchar) * width
 
-            ch = font['data'][ci:ci + w]
+            ch = font['data'][ci:ci + width]
 
             # no font scaling
             px = x
             if (sizex <= 1 and sizey <= 1):
                 for c in ch:
                     py = y
-                    for _ in range(h):
+                    for _ in range(height):
                         if c & 0x01:
                             self.pixel(px, py, color)
                         py += 1
@@ -248,7 +264,7 @@ class ST7735(object):
             else:
                 for c in ch:
                     py = y
-                    for _ in range(h):
+                    for _ in range(height):
                         if c & 0x01:
                             self.rect(px, py, sizex, sizey, color)
                         py += sizey
