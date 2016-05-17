@@ -142,6 +142,54 @@ class ST7735(object):
         self._set_window(x, y, x + w - 1, y + h - 1)
         self.write_pixels((w*h), bytearray([color >> 8, color]))
 
+    def line(self, x0, y0, x1, y1, color):
+        # line is vertical
+        if x0 == x1:
+            # use the smallest y
+            start, end = (x1, y1) if y1 < y0 else (x0, y0)
+            self.vline(start, end, abs(y1 - y0) + 1, color)
+
+        # line is horizontal
+        elif y0 == y1:
+            # use the smallest x
+            start, end = (x1, y1) if x1 < x0 else (x0, y0)
+            self.hline(start, end, abs(x1 - x0) + 1, color)
+
+        else:
+            # Bresenham's algorithm
+            dx = abs(x1 - x0)
+            dy = abs(y1 - y0)
+            inx = 1 if x1 - x0 > 0 else -1
+            iny = 1 if y1 - y0 > 0 else -1
+
+            # steep line
+            if (dx >= dy):
+                dy <<= 1
+                e = dy - dx
+                dx <<= 1
+                while (x0 != x1):
+                    # draw pixels
+                    self.pixel(x0, y0, color)
+                    if (e >= 0):
+                        y0 += iny
+                        e -= dx
+                    e += dy
+                    x0 += inx
+
+            # not steep line
+            else:
+                dx <<= 1
+                e = dx - dy
+                dy <<= 1
+                while(y0 != y1):
+                    # draw pixels
+                    self.pixel(x0, y0, color)
+                    if (e >= 0):
+                        x0 += inx
+                        e -= dy
+                    e += dx
+                    y0 += iny
+
     def hline(self, x, y, w, color):
         if (x >= self.width) or (y >= self.height):
             return
@@ -160,8 +208,10 @@ class ST7735(object):
         self._set_window(x, y, x, y + h - 1)
         self.write_pixels(y+h-1, bytearray([color >> 8, color]))
 
-    def text(self, string, x, y):
-        # font?
+    def text(self, string, font, x, y, color):
+        pass
+
+    def char(self, char, font, x, y, color):
         pass
 
     def init(self):

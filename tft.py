@@ -91,7 +91,7 @@ class TFT(ST7735):
 
 class TFT_GREEN(TFT):
 
-    def __init__ (self, width, height, spi, dc, cs, rst, bl=None):
+    def __init__(self, width, height, spi, dc, cs, rst, bl=None):
         super().__init__(width, height, spi, dc, cs, rst, bl)
 
     def init(self):
