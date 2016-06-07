@@ -3,33 +3,33 @@
 class ST7735(object):
 
     # command definitions
-    CMD_NOP     = const(0x00) # No Operation
+    # CMD_NOP     = const(0x00) # No Operation
     CMD_SWRESET = const(0x01) # Software reset
-    CMD_RDDID   = const(0x04) # Read Display ID
-    CMD_RDDST   = const(0x09) # Read Display Status
+    # CMD_RDDID   = const(0x04) # Read Display ID
+    # CMD_RDDST   = const(0x09) # Read Display Status
 
-    CMD_SLPIN   = const(0x10) # Sleep in & booster off
+    # CMD_SLPIN   = const(0x10) # Sleep in & booster off
     CMD_SLPOUT  = const(0x11) # Sleep out & booster on
-    CMD_PTLON   = const(0x12) # Partial mode on
+    # CMD_PTLON   = const(0x12) # Partial mode on
     CMD_NORON   = const(0x13) # Partial off (Normal)
 
     CMD_INVOFF  = const(0x20) # Display inversion off
     CMD_INVON   = const(0x21) # Display inversion on
-    CMD_DISPOFF = const(0x28) # Display off
+    # CMD_DISPOFF = const(0x28) # Display off
     CMD_DISPON  = const(0x29) # Display on
     CMD_CASET   = const(0x2A) # Column address set
     CMD_RASET   = const(0x2B) # Row address set
-    CMD_RAMWR   = const(0x2C) # Memory write
-    CMD_RAMRD   = const(0x2E) # Memory read
+    # CMD_RAMWR   = const(0x2C) # Memory write
+    # CMD_RAMRD   = const(0x2E) # Memory read
 
-    CMD_PTLAR   = const(0x30) # Partial start/end address set
+    # CMD_PTLAR   = const(0x30) # Partial start/end address set
     CMD_COLMOD  = const(0x3A) # Interface pixel format
     CMD_MADCTL  = const(0x36) # Memory data access control
 
-    CMD_RDID1   = const(0xDA) # Read ID1
-    CMD_RDID2   = const(0xDB) # Read ID2
-    CMD_RDID3   = const(0xDC) # Read ID3
-    CMD_RDID4   = const(0xDD) # Read ID4
+    # CMD_RDID1   = const(0xDA) # Read ID1
+    # CMD_RDID2   = const(0xDB) # Read ID2
+    # CMD_RDID3   = const(0xDC) # Read ID3
+    # CMD_RDID4   = const(0xDD) # Read ID4
 
     # panel function commands
     CMD_FRMCTR1 = const(0xB1) # In normal mode (Full colors)
@@ -75,20 +75,20 @@ class ST7735(object):
 
         Any pixels written to the display will start from this area.
         """
-        # set row XSTART/XEND
-        self.write_cmd(CMD_RASET)
+        # set row: CMD_RASET
+        self.write_cmd(0x2B)
         self.write_data(bytearray(
             [0x00, y0 + self.margin_row, 0x00, y1 + self.margin_row])
         )
 
-        # set column XSTART/XEND
-        self.write_cmd(CMD_CASET)
+        # set column: CMD_CASET
+        self.write_cmd(0x2A)
         self.write_data(bytearray(
             [0x00, x0 + self.margin_col, 0x00, x1 + self.margin_col])
         )
 
-        # write addresses to RAM
-        self.write_cmd(CMD_RAMWR)
+        # write addresses to RAM: CMD_RAMWR
+        self.write_cmd(0x2C)
 
     def power(self, state=None):
         """
@@ -96,10 +96,11 @@ class ST7735(object):
         """
         if state is None:
             return self.power_on
-        self.write_cmd(CMD_DISPON if state else CMD_DISPOFF)
+        # CMD_DISPON or CMD_DISPOFF
+        self.write_cmd(0x29 if state else 0x28)
         self.power_on = state
 
-    def clear(self, color=COLOR_WHITE):
+    def clear(self, color=0xFFFF):
         """
         Clear the display filling it with color.
         """
@@ -111,7 +112,9 @@ class ST7735(object):
         """
         if state is None:
             return self.inverted
-        self.write_cmd(CMD_INVON if state else CMD_INVOFF)
+
+        # CMD_INVON or CMD_INVOFF
+        self.write_cmd(0x21 if state else 0x20)
         self.inverted = state
 
     def rgbcolor(self, r, g, b):
