@@ -5,6 +5,61 @@ from st7735 import ST7735
 
 class TFT(ST7735):
 
+    # command definitions
+    # CMD_NOP     = const(0x00) # No Operation
+    CMD_SWRESET = const(0x01) # Software reset
+    # CMD_RDDID   = const(0x04) # Read Display ID
+    # CMD_RDDST   = const(0x09) # Read Display Status
+
+    # CMD_SLPIN   = const(0x10) # Sleep in & booster off
+    CMD_SLPOUT  = const(0x11) # Sleep out & booster on
+    # CMD_PTLON   = const(0x12) # Partial mode on
+    CMD_NORON   = const(0x13) # Partial off (Normal)
+
+    CMD_INVOFF  = const(0x20) # Display inversion off
+    # CMD_INVON   = const(0x21) # Display inversion on
+    # CMD_DISPOFF = const(0x28) # Display off
+    CMD_DISPON  = const(0x29) # Display on
+    CMD_CASET   = const(0x2A) # Column address set
+    CMD_RASET   = const(0x2B) # Row address set
+    # CMD_RAMWR   = const(0x2C) # Memory write
+    # CMD_RAMRD   = const(0x2E) # Memory read
+
+    # CMD_PTLAR   = const(0x30) # Partial start/end address set
+    CMD_COLMOD  = const(0x3A) # Interface pixel format
+    CMD_MADCTL  = const(0x36) # Memory data access control
+
+    # CMD_RDID1   = const(0xDA) # Read ID1
+    # CMD_RDID2   = const(0xDB) # Read ID2
+    # CMD_RDID3   = const(0xDC) # Read ID3
+    # CMD_RDID4   = const(0xDD) # Read ID4
+
+    # panel function commands
+    CMD_FRMCTR1 = const(0xB1) # In normal mode (Full colors)
+    CMD_FRMCTR2 = const(0xB2) # In Idle mode (8-colors)
+    # CMD_FRMCTR3 = const(0xB3) # In partial mode + Full colors
+    CMD_INVCTR  = const(0xB4) # Display inversion control
+
+    CMD_PWCTR1  = const(0xC0) # Power control settings
+    CMD_PWCTR2  = const(0xC1) # Power control settings
+    CMD_PWCTR3  = const(0xC2) # In normal mode (Full colors)
+    CMD_PWCTR4  = const(0xC3) # In Idle mode (8-colors)
+    CMD_PWCTR5  = const(0xC4) # In partial mode + Full colors
+    CMD_VMCTR1  = const(0xC5) # VCOM control
+
+    CMD_GMCTRP1 = const(0xE0)
+    CMD_GMCTRN1 = const(0xE1)
+
+    # colors
+    COLOR_BLACK   = const(0x0000)
+    COLOR_BLUE    = const(0x001F)
+    COLOR_RED     = const(0xF800)
+    COLOR_GREEN   = const(0x07E0)
+    COLOR_CYAN    = const(0x07FF)
+    COLOR_MAGENTA = const(0xF81F)
+    COLOR_YELLOW  = const(0xFFE0)
+    COLOR_WHITE   = const(0xFFFF)
+
     def __init__(self, width, height, spi, dc, cs, rst, bl=None):
         """
         SPI      - SPI Bus (CLK/MOSI/MISO)
