@@ -54,9 +54,9 @@ class TFT(ST7735):
             return None
         else:
             if state is None:
-                return self.backlight
+                return self.backlight_on
             self.bl.value(1 if state else 0)
-            self.backlight = state
+            self.backlight_on = state
 
     def write_pixels(self, count, color):
         """

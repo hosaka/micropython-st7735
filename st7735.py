@@ -58,12 +58,12 @@ class ST7735(object):
     COLOR_WHITE   = const(0xFFFF)
 
     def __init__(self, width, height):
-        # self.tab     = tab
-        self.width     = width
-        self.height    = height
-        self.power     = True
-        self.inverted  = False
-        self.backlight = True
+        # self.tab        = tab
+        self.width        = width
+        self.height       = height
+        self.power_on     = True
+        self.inverted     = False
+        self.backlight_on = True
 
         # default margins, set yours in HAL init
         self.margin_row = 0
@@ -95,9 +95,9 @@ class ST7735(object):
         Get/set display power.
         """
         if state is None:
-            return self.power
+            return self.power_on
         self.write_cmd(CMD_DISPON if state else CMD_DISPOFF)
-        self.power = state
+        self.power_on = state
 
     def clear(self, color=COLOR_WHITE):
         """
