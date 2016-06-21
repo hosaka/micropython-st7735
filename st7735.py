@@ -268,7 +268,7 @@ class ST7735(object):
                         if c & 0x01:
                             self.rect(px, py, sizex, sizey, color)
                         py += sizey
-                        pc >>= 1
+                        c >>= 1
                     px += sizex
         else:
             # character not found in this font
